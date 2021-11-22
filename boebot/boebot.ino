@@ -1,5 +1,6 @@
 // Robotics with the BOE Shield - MovementsWithSimpleFunctions
 // Move forward, left, right, then backward for testing and tuning.
+#include <Arduino.h>
 #include <Servo.h> // Include servo library
 //#include <SoftwareSerial.h>
  
@@ -11,11 +12,11 @@ bool b = false;
 bool c = false;
 bool d = false;
 
-byte x0 = 0;
-byte x1 = 0;
+uint8_t x0 = 0;
+uint8_t x1 = 0;
 
-byte y0 = 0;
-byte y1 = 0;
+uint8_t y0 = 0;
+uint8_t y1 = 0;
 
 int16_t x = 512;
 int16_t y = 512;

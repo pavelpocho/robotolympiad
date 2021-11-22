@@ -1,6 +1,7 @@
 // Robotics with the BOE Shield - MovementsWithSimpleFunctions
 // Move forward, left, right, then backward for testing and tuning.
 //#include <SoftwareSerial.h>
+#include <Arduino.h>
 
 unsigned long lastSend = 0;
 unsigned long sendInterval = 25;
