@@ -10,6 +10,7 @@ float calibrationDoneF = 0.0f;
 
 int16_t x = 512;
 int16_t y = 512;
+bool btn = false;
 
 int16_t finalX = 512;
 int16_t finalY = 512;
@@ -42,6 +43,7 @@ void loop() // Main loop auto-repeats
     
     x = (int16_t)((float)x * 0.75f + (float)analogRead(A0) * 0.25f);
     y = (int16_t)((float)y * 0.75f + (float)analogRead(A1) * 0.25f);
+    btn = digitalRead(2);
 
     finalX = x - offsetX;
     finalY = y - offsetY;
@@ -67,6 +69,8 @@ void loop() // Main loop auto-repeats
     Serial.write(y0);
     Serial.print('d');
     Serial.write(y1);
+    Serial.print('e');
+    Serial.write(btn);
     Serial.println("");    
   }
   
