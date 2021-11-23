@@ -6,17 +6,21 @@
  
 Servo servoLeft; // Declare left and right servos
 Servo servoRight;
+Servo servoForklift;
 
 bool a = false;
 bool b = false;
 bool c = false;
 bool d = false;
+bool e = false;
 
 uint8_t x0 = 0;
 uint8_t x1 = 0;
 
 uint8_t y0 = 0;
 uint8_t y1 = 0;
+
+uint8_t btn0 = 0;
 
 int16_t x = 512;
 int16_t y = 512;
@@ -26,6 +30,9 @@ int16_t finalY = 512;
 
 int16_t offsetX = 0;
 int16_t offsetY = 0;
+
+uint8_t finalBtnVal = 0;
+bool buttonPressed = false;
 
 //SoftwareSerial btSerial = SoftwareSerial(2, 3);
  
@@ -70,12 +77,17 @@ void loop() // Main loop auto-repeats
         y = y0 | (y1 << 8);
         d = false;
       }
+      if (e) {
+        btn0 = Serial.read();
+        e = false;
+      }
       if (Serial.peek() == 'a') {
         Serial.read();
         a = true;
         b = false;
         c = false;
         d = false;
+        e = false;
       }
       else if (Serial.peek() == 'b') {
         Serial.read();
@@ -83,6 +95,7 @@ void loop() // Main loop auto-repeats
         a = false;
         c = false;
         d = false;
+        e = false;
       }
       else if (Serial.peek() == 'c') {
         Serial.read();
@@ -90,6 +103,7 @@ void loop() // Main loop auto-repeats
         b = false;
         a = false;
         d = false;
+        e = false;
       }
       else if (Serial.peek() == 'd') {
         Serial.read();
@@ -97,11 +111,32 @@ void loop() // Main loop auto-repeats
         b = false;
         c = false;
         a = false;
+        e = false;
+      }
+      else if (Serial.peek() == 'e') {
+        Serial.read();
+        d = false;
+        b = false;
+        c = false;
+        a = false;
+        e = true;
       }
       else {
         Serial.read();
       }
     }
+
+    // Button:
+
+    if (btn0 < 0 || btn0 > 255) {
+      return;
+    }
+
+    finalBtnVal = (uint8_t)((float)(finalBtnVal) * 0.9f + (float)btn0 * 0.1f);
+    buttonPressed = finalBtnVal >= 128;
+
+    // Replace this with actual logic
+    servoForklift.writeMicroseconds(buttonPressed ? 2000 : 1500);
 
     // Need to map it so that 1000 is 1600 and 0 is 1400 for Y
     // 1000 x means one is 1600, one is 1400
@@ -125,11 +160,6 @@ void loop() // Main loop auto-repeats
 
     float throttle = (float)(yF) / 1024.0f * 200.0f - 100.0f;
     float steering = (float)(xF) / 1024.0f * 200.0f - 100.0f;
-    
-//    Serial.print("Throttle:");
-//    Serial.print(throttle);
-//    Serial.print(",Steering:");
-//    Serial.println(steering);
 
     servoLeft.writeMicroseconds(max(1400, min(1600, 1500 + throttle + steering)));
     servoRight.writeMicroseconds(max(1400, min(1600, 1500 + throttle - steering)));
@@ -137,6 +167,8 @@ void loop() // Main loop auto-repeats
   }
   
 }
+
+// Original moving functions
  
 void forward(int time) // Forward function
 { 

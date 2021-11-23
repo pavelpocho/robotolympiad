@@ -10,7 +10,7 @@ float calibrationDoneF = 0.0f;
 
 int16_t x = 512;
 int16_t y = 512;
-bool btn = false;
+uint8_t btn = false;
 
 int16_t finalX = 512;
 int16_t finalY = 512;
@@ -43,7 +43,7 @@ void loop() // Main loop auto-repeats
     
     x = (int16_t)((float)x * 0.75f + (float)analogRead(A0) * 0.25f);
     y = (int16_t)((float)y * 0.75f + (float)analogRead(A1) * 0.25f);
-    btn = digitalRead(2);
+    btn = digitalRead(2) ? 255 : 0;
 
     finalX = x - offsetX;
     finalY = y - offsetY;
