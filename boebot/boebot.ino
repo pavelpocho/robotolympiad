@@ -48,6 +48,7 @@ void setup() // Built-in initialization block
  
 void loop() // Main loop auto-repeats
 {
+  
 //  while (Serial.available()) {
 //    delay(1);
 //    btSerial.write(Serial.read());
@@ -134,10 +135,10 @@ void loop() // Main loop auto-repeats
     }
 
     finalBtnVal = (uint8_t)((float)(finalBtnVal) * 0.9f + (float)btn0 * 0.1f);
-    buttonPressed = finalBtnVal >= 128;
+    buttonPressed = finalBtnVal < 128;
 
     // Replace this with actual logic
-    servoForklift.writeMicroseconds(buttonPressed ? 2000 : 1500);
+    servoForklift.writeMicroseconds(buttonPressed ? 1600 : 1500);
 
     // Need to map it so that 1000 is 1600 and 0 is 1400 for Y
     // 1000 x means one is 1600, one is 1400
