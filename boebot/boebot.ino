@@ -40,6 +40,7 @@ void setup() // Built-in initialization block
 { 
   servoLeft.attach(13); // Attach left signal to pin 13
   servoRight.attach(12); // Attach right signal to pin 12
+  servoForklift.attach(11); // Is forklift on pin 11? Probably? okee
   Serial.begin(115200);
 //  btSerial.begin(115200);
   
