@@ -1,0 +1,7 @@
+{
+    "board": "arduino:avr:nano",
+    "programmer": "arduino:avrispmkii",
+    "port": "COM8",
+    "sketch": "boebot_remote\\boebot_remote.ino",
+    "configuration": "cpu=atmega328old"
+}
