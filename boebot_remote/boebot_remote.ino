@@ -1,6 +1,6 @@
 // Robotics with the BOE Shield - MovementsWithSimpleFunctions
 // Move forward, left, right, then backward for testing and tuning.
-//#include <SoftwareSerial.h>
+//#include <AltSoftSerial.h>
 #include <Arduino.h>
 
 unsigned long lastSend = 0;
@@ -10,7 +10,7 @@ float calibrationDoneF = 0.0f;
 
 int16_t x = 512;
 int16_t y = 512;
-uint8_t btn = false;
+int btn = 0;
 
 int16_t finalX = 512;
 int16_t finalY = 512;
@@ -18,12 +18,10 @@ int16_t finalY = 512;
 int16_t offsetX = 0;
 int16_t offsetY = 0;
 
-//SoftwareSerial btSerial = SoftwareSerial(2, 3);
+//AltSoftSerial btSerial;
  
 void setup()
-{
-  pinMode(4, OUTPUT);
-  digitalWrite(4, HIGH);
+{  
   Serial.begin(115200);
 //  btSerial.begin(115200);
   
@@ -43,7 +41,7 @@ void loop() // Main loop auto-repeats
     
     x = (int16_t)((float)x * 0.75f + (float)analogRead(A0) * 0.25f);
     y = (int16_t)((float)y * 0.75f + (float)analogRead(A1) * 0.25f);
-    btn = digitalRead(2) ? 255 : 0;
+    btn = analogRead(A2) >= 50 ? 255 : 0;
 
     finalX = x - offsetX;
     finalY = y - offsetY;
@@ -73,14 +71,5 @@ void loop() // Main loop auto-repeats
     Serial.write(btn);
     Serial.println("");    
   }
-  
-//  while (Serial.available()) {
-//    delay(1);
-//    btSerial.write(Serial.read());
-//  }
-//  delay(500);
-//  while (btSerial.available()) {
-//    Serial.write(btSerial.read());
-//  }
 }
  

@@ -34,6 +34,9 @@ int16_t offsetY = 0;
 uint8_t finalBtnVal = 0;
 bool buttonPressed = false;
 
+bool forkliftDir = false;
+unsigned long stopForkliftAt = 0;
+
 //SoftwareSerial btSerial = SoftwareSerial(2, 3);
  
 void setup() // Built-in initialization block
@@ -41,6 +44,7 @@ void setup() // Built-in initialization block
   servoLeft.attach(13); // Attach left signal to pin 13
   servoRight.attach(12); // Attach right signal to pin 12
   servoForklift.attach(11); // Is forklift on pin 11? Probably? okee
+  servoForklift.writeMicroseconds(1495);
   Serial.begin(115200);
 //  btSerial.begin(115200);
   
@@ -130,15 +134,28 @@ void loop() // Main loop auto-repeats
 
     // Button:
 
-    if (btn0 < 0 || btn0 > 255) {
-      return;
-    }
-
     finalBtnVal = (uint8_t)((float)(finalBtnVal) * 0.9f + (float)btn0 * 0.1f);
     buttonPressed = finalBtnVal < 128;
 
+    // CAUTION: Stationary point for the forklift servo is 1495!
+
     // Replace this with actual logic
-    servoForklift.writeMicroseconds(buttonPressed ? 1600 : 1500);
+    if (buttonPressed && stopForkliftAt < millis()) {
+      stopForkliftAt = millis() + 2000;
+      forkliftDir = !forkliftDir;
+    }
+    if (stopForkliftAt > millis()) {
+      if (forkliftDir) {
+        servoForklift.writeMicroseconds(1600); 
+      }
+      else {
+        servoForklift.writeMicroseconds(1400); 
+      }
+    }
+    else {
+      servoForklift.writeMicroseconds(1495);
+    }
+    
 
     // Need to map it so that 1000 is 1600 and 0 is 1400 for Y
     // 1000 x means one is 1600, one is 1400
