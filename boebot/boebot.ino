@@ -13,6 +13,7 @@ bool b = false;
 bool c = false;
 bool d = false;
 bool e = false;
+bool f = false;
 
 uint8_t x0 = 0;
 uint8_t x1 = 0;
@@ -21,6 +22,7 @@ uint8_t y0 = 0;
 uint8_t y1 = 0;
 
 uint8_t btn0 = 0;
+uint8_t btn1 = 0;
 
 int16_t x = 512;
 int16_t y = 512;
@@ -33,6 +35,8 @@ int16_t offsetY = 0;
 
 uint8_t finalBtnVal = 0;
 bool buttonPressed = false;
+uint8_t finalBtn1Val = 0;
+bool button1Pressed = false;
 
 bool forkliftDir = false;
 unsigned long stopForkliftAt = 0;
@@ -87,6 +91,10 @@ void loop() // Main loop auto-repeats
         btn0 = Serial.read();
         e = false;
       }
+      if (f) {
+        btn1 = Serial.read();
+        f = false;
+      }
       if (Serial.peek() == 'a') {
         Serial.read();
         a = true;
@@ -94,6 +102,7 @@ void loop() // Main loop auto-repeats
         c = false;
         d = false;
         e = false;
+        f = false;
       }
       else if (Serial.peek() == 'b') {
         Serial.read();
@@ -102,6 +111,7 @@ void loop() // Main loop auto-repeats
         c = false;
         d = false;
         e = false;
+        f = false;
       }
       else if (Serial.peek() == 'c') {
         Serial.read();
@@ -110,6 +120,7 @@ void loop() // Main loop auto-repeats
         a = false;
         d = false;
         e = false;
+        f = false;
       }
       else if (Serial.peek() == 'd') {
         Serial.read();
@@ -118,6 +129,7 @@ void loop() // Main loop auto-repeats
         c = false;
         a = false;
         e = false;
+        f = false;
       }
       else if (Serial.peek() == 'e') {
         Serial.read();
@@ -126,6 +138,16 @@ void loop() // Main loop auto-repeats
         c = false;
         a = false;
         e = true;
+        f = false;
+      }
+      else if (Serial.peek() == 'f') {
+        Serial.read();
+        d = false;
+        b = false;
+        c = false;
+        a = false;
+        e = false;
+        f = true;
       }
       else {
         Serial.read();
@@ -137,20 +159,33 @@ void loop() // Main loop auto-repeats
     finalBtnVal = (uint8_t)((float)(finalBtnVal) * 0.9f + (float)btn0 * 0.1f);
     buttonPressed = finalBtnVal < 128;
 
+    finalBtn1Val = (uint8_t)((float)(finalBtn1Val) * 0.9f + (float)btn1 * 0.1f);
+    button1Pressed = finalBtn1Val >= 128;
+
     // CAUTION: Stationary point for the forklift servo is 1495!
 
     // Replace this with actual logic
-    if (buttonPressed && stopForkliftAt < millis()) {
-      stopForkliftAt = millis() + 2000;
-      forkliftDir = !forkliftDir;
+    // if (buttonPressed && stopForkliftAt < millis()) {
+    //   stopForkliftAt = millis() + 2000;
+    //   forkliftDir = !forkliftDir;
+    // }
+    // if (stopForkliftAt > millis()) {
+    //   if (forkliftDir) {
+    //     servoForklift.writeMicroseconds(1600); 
+    //   }
+    //   else {
+    //     servoForklift.writeMicroseconds(1400); 
+    //   }
+    // }
+    // else {
+    //   servoForklift.writeMicroseconds(1495);
+    // }
+
+    if (button1Pressed && !buttonPressed) {
+      servoForklift.writeMicroseconds(1600);
     }
-    if (stopForkliftAt > millis()) {
-      if (forkliftDir) {
-        servoForklift.writeMicroseconds(1600); 
-      }
-      else {
-        servoForklift.writeMicroseconds(1400); 
-      }
+    else if (buttonPressed && !button1Pressed) {
+      servoForklift.writeMicroseconds(1400);
     }
     else {
       servoForklift.writeMicroseconds(1495);
